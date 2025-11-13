@@ -33,7 +33,7 @@ public class StudyController {
                 .build();
         // hello객체를 "hello"라는 이름으로 html에 전달
         model.addAttribute("hello", hello);
-        // templets 경로안에 hello.html을 찾아서 클라이언트에 보내줘라
+        // templates 경로안에 hello.html을 찾아서 클라이언트에 보내줘라
         return "hello";
     }
 }
