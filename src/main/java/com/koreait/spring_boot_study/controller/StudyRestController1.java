@@ -39,7 +39,7 @@ public class StudyRestController1 {
     }
 
     // 파라미터 2개 & RequestParam 생략
-    // localhost:8080/study/test3?name=홍길동&age=20
+        // localhost:8080/study/test3?name=홍길동&age=20
     @GetMapping("/test3")
     public String test3 (String name, Integer age) {
         // RequestParam은 쿼리스트링의 key와 매개변수의 이름이 같으면 생략가능

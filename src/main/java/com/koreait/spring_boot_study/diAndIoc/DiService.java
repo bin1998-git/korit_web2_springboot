@@ -8,7 +8,7 @@ public class DiService {
 
     private DiRepository diRepository;
 
-    // 생성자 호출쪽에서 DiRepo-를 주입
+    // 생성자 호출쪽에서 DiRepo-    를 주입
     private DiService(DiRepository diRepository){
         this.diRepository = diRepository;
     }
