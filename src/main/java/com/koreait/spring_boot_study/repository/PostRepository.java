@@ -23,7 +23,7 @@ public class PostRepository {
     );
 
     // 전체게시글 조회
-    public List<Post> allList() {
+    public List<Post> findAllPostList() {
         return posts;
     }
 
@@ -35,6 +35,23 @@ public class PostRepository {
                                 // 없으면 null을 optional로 감싸 리턴
 
     }
+
+    // 단건 추가
+
+    public int insertPost(String title, String content) {
+        // maxId
+        int maxId = 0;
+        for (Post post : posts) {
+            if (post.getId() > maxId) {
+                maxId = post.getId();
+            }
+        } // auto_increment 기능
+        Post post = new Post(maxId + 1, title, content);
+        posts.add(post); // sql insert 쿼리
+
+        return 1;
+    }
+
 }
 
 

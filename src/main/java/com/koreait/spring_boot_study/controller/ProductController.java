@@ -1,12 +1,12 @@
 package com.koreait.spring_boot_study.controller;
 
+import com.koreait.spring_boot_study.dto.AddProductReqDto;
 import com.koreait.spring_boot_study.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/product")
@@ -30,6 +30,17 @@ public class ProductController {
     public ResponseEntity<?> getProductName (@PathVariable int id) {
         return ResponseEntity.ok(productService.getProductNameById(id));
 
+    }
+
+    // db에 추가 -> Post
+    // 조회는 get
+    // 추가하는게 민감하니 body에 담음 예) 회원가입
+    @PostMapping("/add")
+    public ResponseEntity<?> postProduct(@Valid @RequestBody AddProductReqDto dto) {
+        productService.addProduct(dto);
+        return ResponseEntity
+                .status(HttpStatus.CREATED) //201
+                .body("성공");
     }
 }
 
