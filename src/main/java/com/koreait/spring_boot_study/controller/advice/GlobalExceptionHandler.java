@@ -4,6 +4,7 @@ import com.koreait.spring_boot_study.entity.Post;
 import com.koreait.spring_boot_study.exception.PostInsertException;
 import com.koreait.spring_boot_study.exception.PostNotFoundException;
 import com.koreait.spring_boot_study.exception.ProductInsertException;
+import com.koreait.spring_boot_study.exception.ProductNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -33,6 +34,13 @@ public class GlobalExceptionHandler {
                 .body(e.getMessage());
     }
 
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<?> handleProductNotFound(ProductNotFoundException e) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(e.getMessage());
+    }
+
     @ExceptionHandler(ProductInsertException.class)
     public ResponseEntity<?> handleProductError(ProductInsertException e) {
 
@@ -45,13 +53,15 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(PostInsertException.class)
-    public ResponseEntity<?> handleProductError(PostInsertException e) {
+    public ResponseEntity<?> handlePostError(PostInsertException e) {
 
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(e.getMessage());
     }
+
+
 
     // validation 예외처리 핸들러(추가, 수정) - 400
     // validation에 실패하면 MethodArgumentNotValidException을 던지게 됨

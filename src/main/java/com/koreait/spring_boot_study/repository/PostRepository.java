@@ -1,6 +1,7 @@
 package com.koreait.spring_boot_study.repository;
 
 import com.koreait.spring_boot_study.entity.Post;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+@Slf4j
 public class PostRepository {
     // CRUD(생성, 조회, 수정, 삭제)
     // DB 대용 필드 - SQL쿼리로 DB에서 데이터를 받아옴(주로 List로)
@@ -52,6 +54,43 @@ public class PostRepository {
         return 1;
     }
 
+    // 단건 삭제 by id
+    public int deletePostById(int id) {
+        // id가 검증이안되면 return 0
+        // optional<> -> 코드를 선언하는 쪽에서 타입을 지정하겠다 : 제네릭
+        Optional<Post> taget = posts.stream()
+                .filter(post -> post.getId() == id)
+                .findFirst();
+
+        if (taget.isEmpty()) {
+            return 0;
+        }
+
+            Post post = taget.get(); // 옵셔널이 가지고 있는 값 가져오기
+            posts.remove(post);
+            log.info("상품삭제완료 : {}", post);
+            return 1;
+    }
+
+    // 단건 업데이트
+    public int updatePost(int id, String title, String content) {
+        Post taget = null;
+        for (Post post : posts) {
+            if (post.getId() == id) {
+                taget = post;
+                break; // findFirst()
+            }
+        }
+        if (taget == null) {
+            return 0;
+        }
+        int index = posts.indexOf(taget); // 기존객체 : target
+        // 외부에서 가져온 데이터로 객체를 새로 생성(newPost)
+        Post newPost = new Post(id, title, content);
+        // index(target이 있던자리)에 새로만든 newPost를 덮어씌워 주세요
+        posts.set(index, newPost);
+        return 1;
+    }
 }
 
 

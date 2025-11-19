@@ -1,6 +1,7 @@
 package com.koreait.spring_boot_study.repository;
 
 import com.koreait.spring_boot_study.entity.Product;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Repository
 public class ProductRepository {
     // DB 대용
@@ -66,4 +68,55 @@ public class ProductRepository {
         return 1; // 한줄추가 -> 1리턴, n줄 추가 -> n리턴
     }
 
+
+    // 단건 삭제
+    // id를 통해서 단건을 삭제하는 메서드
+    public int deleteProductById(int id) {
+        // 매개변수로 들어온 id가 유효한지?
+        // 유효하지 않으면 -> 0을 리턴
+        Optional<Product> taget = products.stream()
+                .filter(product -> product.getId() == id)
+                .findFirst(); // 매칭되는 첫번쨰 데이터를 옵셔널에 포장해서 들고오세요
+
+        if (taget.isEmpty()) { // 찾은 optional을 언패킹했더니 null이라면
+            return 0;
+        }
+
+        // 코드가 진행이 된다는 것은 -> if문에 걸리지 않은것
+        // 옵셔널을 언패킹
+        Product product = taget.get();
+        // 제거
+        products.remove(product);
+        log.info("상픔삭제완료: {}", product);
+        return 1;
+    }
+
+    // 단건 업데이트
+    public int updateProduct(int id, String name, int price) {
+        // 매개변수로 들어온 id가 유효한 id인지
+        Product target = null;
+        for (Product product : products) {
+            if (product.getId() == id) { // 매개변수로 들어온 id와 같다면
+                target = product; // target을 업데이트
+                break;
+            }
+        }
+        if (target == null) { // target이 업데이트가 안되었다면
+            // id는 유효하지 않는것!
+            return  0; // 업데이트 0건 했어요
+        }
+
+        // List 업데이트
+        // 리스트.set(index, 저장할데이터)
+        // 리스트.indexOf(데이터) -> 해당 데이터의 index 번호를 리턴
+        int index = products.indexOf(target);
+        // entity형태로 데이터베이스에 저장
+        Product newProduct = new Product(id, name, price);
+        // target이 있던자리에 newProduct가 저장됨
+        products.set(index, newProduct);
+
+        return 1;
+
+
+    }
 }

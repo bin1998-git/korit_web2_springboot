@@ -1,6 +1,7 @@
 package com.koreait.spring_boot_study.service;
 
 import com.koreait.spring_boot_study.dto.AddPostReqDto;
+import com.koreait.spring_boot_study.dto.ModifyPostReqDto;
 import com.koreait.spring_boot_study.dto.PostResDto;
 import com.koreait.spring_boot_study.entity.Post;
 import com.koreait.spring_boot_study.exception.PostNotFoundException;
@@ -72,6 +73,24 @@ public class PostService {
         }
     }
 
+    // 게시글 삭제
+    public void removePost(int id) {
+        int successCount = postRepository.deletePostById(id);
+
+        if (successCount <= 0) { // 성공건수가 0이라면
+            throw new PostNotFoundException("게시글을 찾을 수 없습니다.");
+        }
+    }
+
+    // 게시글 단건 업데이트
+    public void modifyPost(int id, ModifyPostReqDto dto) {
+        int successCount = postRepository
+                .updatePost(id, dto.getTitle(), dto.getContent());
+
+        if (successCount <= 0) {
+            throw new PostNotFoundException("해당 게시글을 찾을 수 없습니다.");
+        }
+    }
 
 
 }
