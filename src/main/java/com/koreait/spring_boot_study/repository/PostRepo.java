@@ -1,0 +1,28 @@
+package com.koreait.spring_boot_study.repository;
+
+import com.koreait.spring_boot_study.entity.Post;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+public interface PostRepo {
+
+
+    // 전체게시글 조회
+    List<Post> findAllPostList();
+
+    // 게시글 단건 조회
+     Optional<Post> findPostById(int id);
+    // 단건 추가
+
+     int insertPost(String title, String content);
+
+    // 단건 삭제 by id
+    int deletePostById(int id);
+
+
+    // 단건 업데이트
+    int updatePost(int id, String title, String content);
+}

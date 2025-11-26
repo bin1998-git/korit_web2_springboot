@@ -2,27 +2,33 @@ package com.koreait.spring_boot_study.service;
 
 import com.koreait.spring_boot_study.dto.AddProductReqDto;
 import com.koreait.spring_boot_study.dto.ModifyProductReqDto;
-import com.koreait.spring_boot_study.entity.Product;
-import com.koreait.spring_boot_study.exception.PostNotFoundException;
 import com.koreait.spring_boot_study.exception.ProductInsertException;
 import com.koreait.spring_boot_study.exception.ProductNotFoundException;
-import com.koreait.spring_boot_study.repository.ProductRepository;
+import com.koreait.spring_boot_study.repository.ProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
-    private ProductRepository productRepository;
+
+    // 인터페이스타입으로 필드를 가지고 있음
+    private ProductRepo productRepository;
 
     @Autowired
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(@Qualifier("jdbc") ProductRepo productRepository) {
+        /*
+        ProductRepo -> 인터페이스
+        인터페이스 타입의 객체는 존재안함 -> 구현체가 있나 Ioc컨테이너를 검사
+        ProductJdbcRepo , ProductRepository 둘다 ProductRepo를 implements 받았음
+        여러개인 경우가 되어버림 -> 우선순위를 지정해줘서 해결 할 수 있다.
+        1. 필드 변수명과 bean이름이 같으면 매칭
+        2. @Qualifier 사용
+        3. @Primary를 달아주면, 우선순위를 가진다.
+         */
         this.productRepository = productRepository;
     }
     // 1. 다건조회(이름들만)

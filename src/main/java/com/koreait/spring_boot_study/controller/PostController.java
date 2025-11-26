@@ -20,7 +20,7 @@ public class PostController {
     private final PostService postService;
 
     @Autowired
-    public PostController(PostService postService){
+    public PostController(PostService postService) {
         this.postService = postService;
     }
 
@@ -28,8 +28,8 @@ public class PostController {
 
     @GetMapping("/all")
     public ResponseEntity<?> getAllPost() {
-       List<PostResDto> dtos = postService.getAllPost();
-       return ResponseEntity.ok(dtos);
+        List<PostResDto> dtos = postService.getAllPost();
+        return ResponseEntity.ok(dtos);
     }
 
     // localhost:8080/post/2 - GET (2번 게시글 조회)
@@ -57,7 +57,7 @@ public class PostController {
     @PostMapping("/add")
     public ResponseEntity<?> addPost(@Valid @RequestBody AddPostReqDto dto) {
 
-       postService.addPost(dto);
+        postService.addPost(dto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body("등록 성공");
     }
@@ -73,8 +73,8 @@ public class PostController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> modifyPost(@PathVariable int id,
-                                     @Valid @RequestBody ModifyPostReqDto dto) {
-        postService.modifyPost(id,dto);
+                                        @Valid @RequestBody ModifyPostReqDto dto) {
+        postService.modifyPost(id, dto);
         return ResponseEntity.ok("수정완료");
     }
 

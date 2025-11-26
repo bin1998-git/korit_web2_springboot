@@ -1,6 +1,7 @@
-package com.koreait.spring_boot_study.repository;
+package com.koreait.spring_boot_study.repository.impl;
 
 import com.koreait.spring_boot_study.entity.Post;
+import com.koreait.spring_boot_study.repository.PostRepo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
@@ -11,7 +12,7 @@ import java.util.Optional;
 
 @Repository
 @Slf4j
-public class PostRepository {
+public class PostRepository implements PostRepo {
     // CRUD(생성, 조회, 수정, 삭제)
     // DB 대용 필드 - SQL쿼리로 DB에서 데이터를 받아옴(주로 List로)
 
@@ -34,7 +35,7 @@ public class PostRepository {
         return posts.stream()
                 .filter(post -> post.getId() == id)
                 .findFirst(); // 객체가 있으면 객체를 optional로 감싸 리턴
-                                // 없으면 null을 optional로 감싸 리턴
+        // 없으면 null을 optional로 감싸 리턴
 
     }
 
@@ -66,10 +67,10 @@ public class PostRepository {
             return 0;
         }
 
-            Post post = taget.get(); // 옵셔널이 가지고 있는 값 가져오기
-            posts.remove(post);
-            log.info("상품삭제완료 : {}", post);
-            return 1;
+        Post post = taget.get(); // 옵셔널이 가지고 있는 값 가져오기
+        posts.remove(post);
+        log.info("상품삭제완료 : {}", post);
+        return 1;
     }
 
     // 단건 업데이트
