@@ -1,6 +1,7 @@
 package com.koreait.spring_boot_study.repository.impl;
 
 import com.koreait.spring_boot_study.entity.Product;
+import com.koreait.spring_boot_study.model.Top3SellingProduct;
 import com.koreait.spring_boot_study.repository.ProductRepo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -119,5 +120,10 @@ public class ProductRepository implements ProductRepo {
         return 1;
 
 
+    }
+
+    @Override // 구현x
+    public List<Top3SellingProduct> findTop3SellingProducts() {
+        return List.of();
     }
 }

@@ -1,6 +1,7 @@
 package com.koreait.spring_boot_study.repository.impl;
 
 import com.koreait.spring_boot_study.entity.Product;
+import com.koreait.spring_boot_study.model.Top3SellingProduct;
 import com.koreait.spring_boot_study.repository.ProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -152,12 +153,100 @@ public class ProductJdbcRepo implements ProductRepo {
 
     @Override
     public int deleteProductById(int id) {
+        String sql = "delete from product where product_id = ?";
+        Connection conn = null;
+        PreparedStatement ps = null;
+
+        try {
+            conn = dataSource.getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1,id);
+            return ps.executeUpdate(); // 쿼리로 영향받은 row수를 db가 리턴해줌
+
+        }catch (SQLException e) {
+            e.printStackTrace();
+
+        } finally {
+            close(ps);
+            close(conn);
+        }
+
         return 0;
     }
 
     @Override
     public int updateProduct(int id, String name, int price) {
+        // StringBuilder 사용
+        StringBuilder sb = new StringBuilder();
+        // StringBuilder 사용 -> 기존 객체를 변형하는 것
+        sb.append("update product");
+        sb.append("set product_name = ?, product_price = ?");
+        sb.append("where product_id = ?");
+        String sql = sb.toString(); // StringBuilder가 가진 문자열 반환
+
+        // 문자열 덧셈 -> 계속해서 새로운 객체를 생성
+        // 문자열도 결국 객체(참조자료형)
+        // String c = a + b -> c는 a, b와는 무관한 독립적인 새로운객체
+        String sql2 = "update product set product_name = ?," +
+                " product_price = ? where product_id = ?";
+        Connection conn = null;
+        PreparedStatement ps = null;
+        try {
+            conn = dataSource.getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setString(1,name);
+            ps.setInt(2,price);
+            ps.setInt(3,id);
+            return ps.executeUpdate(); // 단건이라 1 리턴될 것/ id가 이상하면 0리턴
+        }catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(ps);
+            close(conn);
+        }
         return 0;
     }
 
+    @Override
+    public List<Top3SellingProduct> findTop3SellingProducts() {
+        List<Top3SellingProduct> result = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        StringBuilder sb = new StringBuilder();
+        sb.append("select p.product_id, p.product_name, sum(od.quantity) as `total_sold_count` ");
+        sb.append("from product p ");
+        sb.append("join order_details od ");
+        sb.append("on p.product_id = od.product_id ");
+        sb.append("group by p.product_id, p.product_name ");
+        sb.append("order by total_sold_count desc ");
+        sb.append("limit 3 ");
+
+        String sql = sb.toString();
+
+        try {
+           conn = dataSource.getConnection();
+           ps = conn.prepareStatement(sql);
+           rs = ps.executeQuery();
+
+           while (rs.next()) {
+               int id = rs.getInt("product_id");
+               String name = rs.getString("product_name");
+               int totalSoldCount = rs.getInt("total_sold_count");
+
+               result.add(new Top3SellingProduct(id, name, totalSoldCount));
+           }
+           return result;
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }finally {
+            close(rs);
+            close(ps);
+            close(conn);
+        }
+
+
+        return List.of();
+    }
 }

@@ -63,5 +63,10 @@ public class ProductController {
         return ResponseEntity.ok("수정 완료");
     }
 
+    @GetMapping("/top3")
+    public ResponseEntity<?> top3() {
+        return ResponseEntity.ok(productService.getTop3SellingProduct());
+    }
+
 }
 
