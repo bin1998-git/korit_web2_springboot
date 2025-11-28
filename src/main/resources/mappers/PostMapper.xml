@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+1. ResultMap 정의를 해주세요
+2. select 작성 - findAllPosts 완성
+3. select 작성 - findPostById 완성(리턴타입이 옵셔널이라도,
+resultMap으로 지정해주면 됩니다.) -> interface의 시그니처를 따라감
+-> 인터페이스의 메서드 시그니처를 인식해서 알아서 옵셔널로 포장해서 리턴해준다
+-->
+<mapper namespace="com.koreait.spring_boot_study.repository.mapper.PostMapper">
+
+
+<resultMap id="postMap" type="com.koreait.spring_boot_study.entity.Post">
+
+    <id property="id" column="id"/>
+    <result property="title" column="title"/>
+    <result property="content" column="content"/>
+</resultMap>
+
+    <select id="findAllPostList" resultMap="postMap">
+        select
+            id,
+            title,
+            content
+        from
+            post
+    </select>
+
+    <!-- parameeterType을 명시적으로 적어줄수 있다. -->
+    <select id="findPostById"
+            resultMap="postMap"
+            parameterType="int"
+    >
+        select
+            id,
+            title,
+            content
+        from
+            post
+        where
+            id = #{id}
+    </select>
+
+    <insert id="insertPost">
+    </insert>
+    <update id="updatePost">
+    </update>
+    <delete id="deletePostById">
+    </delete>
+
+
+</mapper>

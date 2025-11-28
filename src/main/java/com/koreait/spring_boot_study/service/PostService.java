@@ -7,6 +7,8 @@ import com.koreait.spring_boot_study.entity.Post;
 import com.koreait.spring_boot_study.exception.PostNotFoundException;
 import com.koreait.spring_boot_study.repository.PostRepo;
 import com.koreait.spring_boot_study.repository.impl.PostRepository;
+import com.koreait.spring_boot_study.repository.mapper.PostMapper;
+import com.koreait.spring_boot_study.repository.mapper.ProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +18,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class PostService {
-    private PostRepo postRepository;
+    private PostMapper postRepository;
 
     @Autowired
-    public PostService(PostRepo postRepository) {
+    public PostService(PostMapper postRepository) {
 
         this.postRepository = postRepository;
     }
