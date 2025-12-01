@@ -5,6 +5,7 @@ import com.koreait.spring_boot_study.dto.ModifyPostReqDto;
 import com.koreait.spring_boot_study.dto.PostResDto;
 import com.koreait.spring_boot_study.service.PostService;
 import jakarta.validation.Valid;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,7 +55,7 @@ public class PostController {
 
     // 1. 단건 추가 컨트롤러 -> 서비스 -> 레파지토리 코드를 작성
     // + Validation을 사용해봅시다!
-    @PostMapping("/add")
+    @PostMapping("/add") // 잭슨이 DTO를 만들대, @NoArgsConstructor가 필요
     public ResponseEntity<?> addPost(@Valid @RequestBody AddPostReqDto dto) {
 
         postService.addPost(dto);
