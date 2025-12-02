@@ -1,6 +1,5 @@
-package com.koreait.spring_boot_study.dto;
+package com.koreait.spring_boot_study.dto.req;
 
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;

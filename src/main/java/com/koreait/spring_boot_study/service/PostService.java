@@ -1,17 +1,19 @@
 package com.koreait.spring_boot_study.service;
 
-import com.koreait.spring_boot_study.dto.AddPostReqDto;
-import com.koreait.spring_boot_study.dto.ModifyPostReqDto;
-import com.koreait.spring_boot_study.dto.PostResDto;
+import com.koreait.spring_boot_study.dto.req.AddPostReqDto;
+import com.koreait.spring_boot_study.dto.req.ModifyPostReqDto;
+import com.koreait.spring_boot_study.dto.req.SearchPostReqDto;
+import com.koreait.spring_boot_study.dto.res.PostResDto;
+import com.koreait.spring_boot_study.dto.res.PostWithCommentsResDto;
+import com.koreait.spring_boot_study.dto.res.SearchPostResDto;
+import com.koreait.spring_boot_study.dto.res.SearchProductResDto;
 import com.koreait.spring_boot_study.entity.Post;
 import com.koreait.spring_boot_study.exception.PostNotFoundException;
-import com.koreait.spring_boot_study.repository.PostRepo;
-import com.koreait.spring_boot_study.repository.impl.PostRepository;
 import com.koreait.spring_boot_study.repository.mapper.PostMapper;
-import com.koreait.spring_boot_study.repository.mapper.ProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -96,5 +98,44 @@ public class PostService {
         }
     }
 
+    // 게시물 상세 검색 dto - req, res 각각 만들어 주는게 best
+    public List<SearchPostResDto> searchDetailPosts(
+            SearchPostReqDto dto
+    ) {
+        List<Post> posts = postRepository.searchDetailPosts(
+                dto.getTitleKeyword(),
+                dto.getContentKeyword()
+        );
+
+        if (posts == null || posts.isEmpty()) {
+            throw new PostNotFoundException("조건에 맞는 게시글이 없습니다.");
+        }
+
+        // List<entity> -> List<dto>
+        return posts.stream()
+                .map(p -> new SearchPostResDto(p.getTitle(), p.getContent()))
+                .collect(Collectors.toList());
+
+
+    }
+
+    public PostWithCommentsResDto getPostWithComments(int id) {
+       Post post = postRepository.findPostWithComments(id)
+               .orElseThrow(() -> new PostNotFoundException("해당 게시글을 찾을 수 없습니다."));
+
+       // comments null 체크해야함
+        List<String> comments
+                = post.getComments() == null
+                ? List.of() // null이면 빈리스트 반환
+                : post.getComments().stream()
+                .map(c -> c.getCommentContent())
+                .collect(Collectors.toList()); // 아니라면, id빼고 content 내용만
+
+        return new PostWithCommentsResDto(
+                post.getTitle(),
+                post.getContent(),
+                comments
+        );
+    }
 
 }

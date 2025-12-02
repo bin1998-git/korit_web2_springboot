@@ -68,6 +68,14 @@ public interface ProductMapper {
     // productId로 판매량까지 같이 조회
     Product findProductWithQuantities(int productid);
 
+    // 상품이름, 최소가격, 최대가격 필터링 검색
+    // where product_name like '% + {product_name} + %'
+    List<Product> searchDetailProducts(
+            @Param("nameKeyword") String nameKeyword,
+            @Param("minPrice") Integer minPrice, // null체크하기위해 Integer선언
+            @Param("maxPrice") Integer maxPrice
+    );
+
 
 }
 

@@ -1,8 +1,15 @@
 package com.koreait.spring_boot_study.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class Comment {
     private int commentId;
-    private String content;
+    private String commentContent;
 
     private Post post; // FK대신에 객체를 필드로 가지고 있어야 한다.
     // comment.getPost().getId() -> 계속된 참조로 탐색하는것(객체 그래프탐색)
