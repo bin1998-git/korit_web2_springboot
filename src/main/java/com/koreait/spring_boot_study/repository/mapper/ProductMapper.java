@@ -76,6 +76,10 @@ public interface ProductMapper {
             @Param("maxPrice") Integer maxPrice
     );
 
+    // 다건 입력
+
+    int insertProducts(List<Product> products);
+
 
 }
 

@@ -8,10 +8,12 @@ import com.koreait.spring_boot_study.dto.res.PostWithCommentsResDto;
 import com.koreait.spring_boot_study.dto.res.SearchPostResDto;
 import com.koreait.spring_boot_study.dto.res.SearchProductResDto;
 import com.koreait.spring_boot_study.entity.Post;
+import com.koreait.spring_boot_study.exception.PostInsertException;
 import com.koreait.spring_boot_study.exception.PostNotFoundException;
 import com.koreait.spring_boot_study.repository.mapper.PostMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -136,6 +138,24 @@ public class PostService {
                 post.getContent(),
                 comments
         );
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void addPosts(List<AddPostReqDto> dtoList) {
+        List<Post> posts = dtoList.stream()
+                    .map(dto ->Post.builder()
+                            .title(dto.getTitle())
+                            .content(dto.getContent())
+                            .build())
+                            .collect(Collectors.toList());
+
+            int successCount = postRepository.insertPosts(posts);
+
+            if (successCount != posts.size()) {
+                throw new PostInsertException("해당 게시글등록 중 문제가 발생하였습니다.");
+            }
+
+
     }
 
 }

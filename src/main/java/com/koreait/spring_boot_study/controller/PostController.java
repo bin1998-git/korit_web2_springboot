@@ -5,6 +5,7 @@ import com.koreait.spring_boot_study.dto.req.ModifyPostReqDto;
 import com.koreait.spring_boot_study.dto.req.SearchPostReqDto;
 import com.koreait.spring_boot_study.dto.req.SearchProductReqDto;
 import com.koreait.spring_boot_study.dto.res.PostResDto;
+import com.koreait.spring_boot_study.dto.res.PostWithCommentsResDto;
 import com.koreait.spring_boot_study.service.PostService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,4 +99,19 @@ public class PostController {
 
         return ResponseEntity.ok(postService.searchDetailPosts(dto));
     }
+
+    @GetMapping("/{id}/comments")
+    public ResponseEntity<?> getPostWithComments(@PathVariable int id) {
+       PostWithCommentsResDto dto = postService.getPostWithComments(id);
+       return ResponseEntity.ok(dto);
+    }
+
+    @PostMapping("/add/bulk")
+    public ResponseEntity<?> addPosts(@RequestBody @Valid List<AddPostReqDto> dtoList) {
+        postService.addPosts(dtoList);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body("전체 상품 등록 성공" + dtoList + "건");
+
+    }
+
 }

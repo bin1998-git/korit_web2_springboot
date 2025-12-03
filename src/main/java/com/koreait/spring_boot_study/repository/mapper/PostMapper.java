@@ -64,4 +64,6 @@ public interface PostMapper {
 
     Optional<Post> findPostWithComments(int id);
 
+    // post 다건입력 xml, service, controller
+    int insertPosts(List<Post> posts);
 }
