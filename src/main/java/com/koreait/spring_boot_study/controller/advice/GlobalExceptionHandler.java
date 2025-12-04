@@ -1,10 +1,7 @@
 package com.koreait.spring_boot_study.controller.advice;
 
 import com.koreait.spring_boot_study.entity.Post;
-import com.koreait.spring_boot_study.exception.PostInsertException;
-import com.koreait.spring_boot_study.exception.PostNotFoundException;
-import com.koreait.spring_boot_study.exception.ProductInsertException;
-import com.koreait.spring_boot_study.exception.ProductNotFoundException;
+import com.koreait.spring_boot_study.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -99,6 +96,13 @@ public class GlobalExceptionHandler {
                 .body(errorResp);
     }
 
+
+    @ExceptionHandler(UserException.class)
+    public ResponseEntity<?> handleUserException(UserException e) {
+        return ResponseEntity
+                .status(e.getStatus())
+                .body(e.getMessage());
+    }
 
 
 }
