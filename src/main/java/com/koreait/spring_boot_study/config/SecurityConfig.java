@@ -1,5 +1,7 @@
 package com.koreait.spring_boot_study.config;
 
+import com.koreait.spring_boot_study.jwt.JwtAuthenticationFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -11,6 +13,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+@RequiredArgsConstructor
 @Configuration
 public class SecurityConfig {
 

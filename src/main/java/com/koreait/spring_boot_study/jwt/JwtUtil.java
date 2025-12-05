@@ -64,13 +64,13 @@ public class JwtUtil { // jwt 토큰 발급 & jwt 토큰 검증
 
     }
     // accessToken 발급
-    private String generateAccessToken(String subject, Map<String, Object> claims) {
+    public String generateAccessToken(String subject, Map<String, Object> claims) {
         return buildToken(subject, accessExpireMills, claims, "ACCESS");
     }
     // refreshToken 발급
     // refreshToken -> accessToken이 만료되면 다시 accessToken을 발행하도록
     // 이전에 인증이 되었다고 증명해주는 토큰
-    private String generateRefreshToken(String subject) {
+    public String generateRefreshToken(String subject) {
         return buildToken(subject, refreshExpireMills, Map.of(), "REFRESH");
     }
 
