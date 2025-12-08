@@ -40,7 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader("authorization");
 
         // "Bearer " 접두가 없다면 다음 필터로 넘긴다 -> 사실상 인증실패
-        if (jwtUtil.isBearer(authHeader)) {
+        if (!jwtUtil.isBearer(authHeader)) {
             filterChain.doFilter(request, response);
             return;
         }
