@@ -2,6 +2,7 @@ package com.koreait.spring_boot_study.config;
 
 import com.koreait.spring_boot_study.jwt.JwtAuthenticationEntryPoint;
 import com.koreait.spring_boot_study.jwt.JwtAuthenticationFilter;
+import com.koreait.spring_boot_study.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,10 +22,12 @@ import java.util.List;
 @Configuration
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtUtil jwtUtil;
+
 
     @Bean // 사용자 비밀번호를 암호화하는 객체(시큐리티 라이브러리)
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
+
         return new BCryptPasswordEncoder();
     }
 
@@ -32,7 +35,13 @@ public class SecurityConfig {
     // 시큐리티 설정에 관여하므로, 명시적으로 bean등록을 하는걸 권장
     @Bean // 인증실패시 실패응답을 처리할 entryPoint
     public JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint() {
+
         return new JwtAuthenticationEntryPoint();
+    }
+
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter () {
+        return new JwtAuthenticationFilter(jwtUtil);
     }
 
     /*
@@ -101,7 +110,7 @@ public class SecurityConfig {
 
         // jwt 관련 필터 설정
         // 1. jwt 필터 추가
-        http.addFilterBefore(jwtAuthenticationFilter,
+        http.addFilterBefore(jwtAuthenticationFilter(),
                 UsernamePasswordAuthenticationFilter.class);
 
 
@@ -113,12 +122,12 @@ public class SecurityConfig {
         // url 요청에 대한 권한 설정
         http.authorizeHttpRequests(auth -> {
             // 특정 요청에 대해서는 검사하지 않고 통과
-            auth.requestMatchers("/auth/**").permitAll(); // auth관련 모든것은 처리하겟다.
+            //auth.requestMatchers("/auth/**").permitAll(); // auth관련 모든것은 처리하겟다.
             // 그외 모든 경로에 대해서는 검사하겠다
-             auth.anyRequest().authenticated();
+             //auth.requestMatchers("/study/**").authenticated();
 
             // 우선 모두통과
-            // auth.anyRequest().permitAll();
+             auth.anyRequest().permitAll();
         });
 
         return http.build();

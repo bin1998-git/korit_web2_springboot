@@ -104,5 +104,11 @@ public class GlobalExceptionHandler {
                 .body(e.getMessage());
     }
 
+    @ExceptionHandler(RefreshTokenException.class)
+    public ResponseEntity<?> handleRefreshTokenException(RefreshTokenException e) {
+        return ResponseEntity
+                .status(e.getStatus())
+                .body(e.getMessage());
+    }
 
 }

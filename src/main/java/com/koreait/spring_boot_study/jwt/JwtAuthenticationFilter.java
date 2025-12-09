@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.List;
 
 // filter -> 요청과 응답의 전처리 or 후처리를 위해 존재
-@Component
+
 @RequiredArgsConstructor // @AutoWired 자동화 - final 필드에 대해서
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     // jwt토큰 전략을 사용하기 때문에
@@ -55,7 +55,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             Claims claims = jwtUtil.getClaims(token);
 
             // claim : Map<String, Object>이다. 다운캐스팅 해줘야한다.
-            String type =claims.get("type", String.class);
+            String type = claims.get("type", String.class);
             // 꺼낸토큰이 ACCESS가 아니라면
             if (!type.equals("ACCESS")) {
                 throw new JwtException("엑세스 토큰이 아닙니다.");
@@ -70,7 +70,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             List<GrantedAuthority> authorities = List.of(jwtAuth);
 
             // Authentication 완성
-            JwtAuthentication authentication = new JwtAuthentication(userId,authorities);
+            JwtAuthentication authentication = new JwtAuthentication(userId, authorities);
 
             // SecurityContext(인증 저장소)는 여러 사용자들의 인증정보 저장소
             // 함부로 접근하지 못하게 SecurityContextHolder라는 심부름꾼을 만들어놓았다.
@@ -90,7 +90,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         // 다음필터 실행
-        filterChain.doFilter(request,response);
+        filterChain.doFilter(request, response);
 
 
     }

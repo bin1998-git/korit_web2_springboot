@@ -3,6 +3,7 @@ package com.koreait.spring_boot_study.controller;
 import com.koreait.spring_boot_study.dto.req.SignInReqDto;
 import com.koreait.spring_boot_study.dto.req.SignUpReqDto;
 import com.koreait.spring_boot_study.dto.res.SignInResDto;
+import com.koreait.spring_boot_study.exception.RefreshTokenException;
 import com.koreait.spring_boot_study.jwt.JwtUtil;
 import com.koreait.spring_boot_study.service.AuthService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -77,7 +79,6 @@ public class AuthController { // 회원가입, 로그인, 로그아웃
     라는 메세지를 응답한다. 프론트엔드에서 이 응답을 받으면, 자동으로
     /auth/refresh로 요청하게끔 설계한다
      */
-
     @PostMapping("/refresh")
     public ResponseEntity<?> refresh(
             HttpServletResponse response,
@@ -86,12 +87,53 @@ public class AuthController { // 회원가입, 로그인, 로그아웃
     ) {
         // 쿠키에서 refresh토큰을 꺼내와야 한다.
         if (refreshToken == null) {
-            // todo: 예외 던져야함
+            throw new RefreshTokenException(
+                    "리프레쉬 토큰이 존재하지 않습니다.",
+                    HttpStatus.BAD_REQUEST
+            );
         }
 
         // 서비스로 쿠키값(refresh 토큰) 넘긴다.
+        SignInResDto resDto = authService.refreshToken(refreshToken);
 
-        return ResponseEntity.ok("");
+        // 쿠키에 새로운 리프레쉬토큰 설정
+        addRefreshTokenCookie(resDto.getRefreshToken(), response);
+        // 응답 body에는 accessToken만 응답
+        return ResponseEntity.ok(resDto.getAccessToken());
+    }
+
+    // 로그아웃
+    // 프론트엔드에서 사실상 저장해뒀던 accessToken을 지워버리면 로그아웃이 구현된 것
+    // 놀이공원 다 즐기고 나갈떄 팔찌를 가위로 자르는것과 같음
+    // 하지만 refreshToken은 db에 저장되어 있어서 누적되면 곤란하니 삭제해준다.
+
+    public ResponseEntity<?> logout(
+            @CookieValue(value = "refreshToken", required = false) String refreshToken,
+            HttpServletResponse response
+    ) {
+        if (refreshToken == null) {
+            throw new RefreshTokenException(
+                    "리프레쉬 토큰이 존재하지 않습니다.",
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+
+        // 서비스 호출해서 db에서 refreshToken 삭제
+        authService.logout(refreshToken);
+
+        // 쿠키도 브라우저에서 제거
+        ResponseCookie cookie = ResponseCookie
+                .from("refreshToken","") // 토큰내용 빈값으로 교체
+                .httpOnly(false) // 운영시 true
+                .secure(false) // 운영시 true
+                .sameSite("Lax") // 브라우저 get요청은 ok
+                .path("/")
+                .maxAge(0) // 쿠키 수명을 0초 -> 삭제
+                .build();
+
+        // 응답헤더에 쿠키 적용
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        return ResponseEntity.ok("로그아웃 완료");
     }
 
 }

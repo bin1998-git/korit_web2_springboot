@@ -16,18 +16,18 @@ import java.util.Objects;
 @Component
 public class JwtUtil { // jwt 토큰 발급 & jwt 토큰 검증
     private final SecretKey key;
-    private final long accessExpireMills;
-    private final long refreshExpireMills;
+    private final long accessExpireMillis;
+    private final long refreshExpireMillis;
 
     public JwtUtil(
             // @Value로 yaml에 있는 민감한 정보를 참조할 수 있음
             @Value("${jwt.secret}") String secret,
-            @Value("${jwt.access-expire-millis}") long accessExpireMills,
-            @Value("${jwt.refresh-expire-millis}") long refreshExpireMills
+            @Value("${jwt.access-expire-millis}") long accessExpireMillis,
+            @Value("${jwt.refresh-expire-millis}") long refreshExpireMillis
     ) {
        this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
-       this.accessExpireMills = accessExpireMills;
-       this.refreshExpireMills = refreshExpireMills;
+       this.accessExpireMillis = accessExpireMillis;
+       this.refreshExpireMillis = refreshExpireMillis;
     }
     /*
         jwt토큰 -> 암호화된 문자열
@@ -56,7 +56,7 @@ public class JwtUtil { // jwt 토큰 발급 & jwt 토큰 검증
         // 만약 추가 claims(Map)가 있다면
         if (extraClaims != null) {
             // map을 순회하면서, builder.claim(key, value)를 실행
-            extraClaims.forEach((k,v) ->builder.claim(k, v));
+            extraClaims.forEach((k,v) -> builder.claim(k, v));
         }
         return builder
                 .signWith(key) // secret을 사용해서 암호화
@@ -65,13 +65,13 @@ public class JwtUtil { // jwt 토큰 발급 & jwt 토큰 검증
     }
     // accessToken 발급
     public String generateAccessToken(String subject, Map<String, Object> claims) {
-        return buildToken(subject, accessExpireMills, claims, "ACCESS");
+        return buildToken(subject, accessExpireMillis, claims, "ACCESS");
     }
     // refreshToken 발급
     // refreshToken -> accessToken이 만료되면 다시 accessToken을 발행하도록
     // 이전에 인증이 되었다고 증명해주는 토큰
     public String generateRefreshToken(String subject) {
-        return buildToken(subject, refreshExpireMills, Map.of(), "REFRESH");
+        return buildToken(subject, refreshExpireMillis, Map.of(), "REFRESH");
     }
 
     // ################# 토큰검증 ################# : PermitAll()이 적용되지않은 모든 컨트롤러 주소
@@ -92,6 +92,7 @@ public class JwtUtil { // jwt 토큰 발급 & jwt 토큰 검증
     // Authorization : "Bearer " + 토큰문자열
     // 첨부하여 요청을 서버로 보내야 한다.
     public boolean isBearer(String header) {
+
         return header != null && header.startsWith("Bearer ");
     }
 
@@ -103,7 +104,7 @@ public class JwtUtil { // jwt 토큰 발급 & jwt 토큰 검증
     public boolean isRefreshToken(String token) {
         try {
             String type = getClaims(token)
-                    .get("type",String.class);
+                    .get("type", String.class);
 
             return type.equals("REFRESH");
         } catch (Exception e) {
