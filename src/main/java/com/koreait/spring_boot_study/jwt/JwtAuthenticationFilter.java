@@ -30,6 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // 1. 예비요청(Preflight) 패스 - Cors 에러 관련
         // 예비요청은 get, post... 실제요청 전에 항상 브라우저가 보내는 요청
         String requestMethod = request.getMethod();
+
         if (requestMethod.equalsIgnoreCase("OPTIONS")) {
             filterChain.doFilter(request, response); // 다음필터로 패스
             return;

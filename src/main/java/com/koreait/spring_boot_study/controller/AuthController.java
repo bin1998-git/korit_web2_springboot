@@ -51,7 +51,6 @@ public class AuthController { // 회원가입, 로그인, 로그아웃
 
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody @Valid SignUpReqDto dto) {
-        System.out.println("요청옴");
         authService.signUp(dto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -135,5 +134,5 @@ public class AuthController { // 회원가입, 로그인, 로그아웃
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         return ResponseEntity.ok("로그아웃 완료");
     }
-
+    
 }
